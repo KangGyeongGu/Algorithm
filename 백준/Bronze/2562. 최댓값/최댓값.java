@@ -1,20 +1,22 @@
 import java.io.*;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int max = 0, idx = 0;
-        int input;
+        int max = 0;
+        int index = 0;
+        int input = 0;
+
         for (int i = 1; i <= 9; i++) {
-            input = sc.nextInt();
+            input = Integer.parseInt(br.readLine());
+
             if (input > max) {
                 max = input;
-                idx = i;
+                index = i;
             }
         }
-        System.out.println(max);
-        System.out.println(idx);
+
+        System.out.print(max + "\n" + index);
     }
 }
