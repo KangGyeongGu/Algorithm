@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -16,15 +17,11 @@ public class Main {
             j = Integer.parseInt(ijk[1]);
             k = Integer.parseInt(ijk[2]);
 
-            for (int l = i-1; l < j; l++) {
-                arr[l] = k;
-            }
+            Arrays.fill(arr, i-1, j, k);
         }
 
-        for (int l = 0; l < N; l++) {
-            System.out.print(arr[l] + " ");
-        }
+        for (int l = 0; l < N; l++) System.out.print(arr[l] + " ");
         
-        br.close();;
+        br.close();
     }
 }
