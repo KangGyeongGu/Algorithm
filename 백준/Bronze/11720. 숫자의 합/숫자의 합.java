@@ -8,11 +8,12 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int N = Integer.parseInt(br.readLine());
-        String in = br.readLine();
+
+        String input = br.readLine();
 
         int sum = 0;
-        for (int i = 0; i < in.length(); i++) {
-            sum += Character.getNumericValue(in.charAt(i));
+        for (int i = 0; i < N; i++) {
+            sum += input.charAt(i) - '0';
         }
 
         System.out.println(sum);
