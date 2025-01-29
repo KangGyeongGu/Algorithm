@@ -10,25 +10,23 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
+        int size = N * M;  // 전체 원소 개수
 
-        int[][] matrix = new int[N][M];
+        int[] arr = new int[size]; // 1차원 배열로 저장
 
         // 첫 번째 행렬 입력
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < M; j++) {
-                matrix[i][j] = Integer.parseInt(st.nextToken());
-            }
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < size; i++) {
+            if (!st.hasMoreTokens()) st = new StringTokenizer(br.readLine()); // 줄바꿈 처리
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        // 두 번째 행렬 입력 및 합 계산
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < M; j++) {
-                matrix[i][j] += Integer.parseInt(st.nextToken());
-                sb.append(matrix[i][j]).append(" ");
-            }
-            sb.append("\n");
+        // 두 번째 행렬 입력 및 덧셈 연산 수행
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < size; i++) {
+            if (!st.hasMoreTokens()) st = new StringTokenizer(br.readLine()); // 줄바꿈 처리
+            arr[i] += Integer.parseInt(st.nextToken());
+            sb.append(arr[i]).append((i + 1) % M == 0 ? "\n" : " ");
         }
 
         // 결과 출력
