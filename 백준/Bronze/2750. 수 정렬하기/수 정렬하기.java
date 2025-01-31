@@ -1,4 +1,5 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -7,11 +8,16 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		
 		int N = sc.nextInt();
-		int[] arr = new int[N];
+
+		ArrayList<Integer> arr = new ArrayList<>();
+		
 		for (int i = 0; i < N; i++) {
-			arr[i] = sc.nextInt(); 
+			int num = sc.nextInt();
+			int pos = Collections.binarySearch(arr, num);
+			if (pos < 0) pos = -(pos+1);
+			arr.add(pos, num);
 		}
-		Arrays.sort(arr);
+		
 		for (int a : arr) {
 			System.out.println(a);
 		}
