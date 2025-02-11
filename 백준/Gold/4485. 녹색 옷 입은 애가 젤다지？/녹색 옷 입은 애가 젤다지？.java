@@ -38,7 +38,6 @@ public class Main {
 
             int[][] arr = new int[N][N]; // 입력 배열
             int[][] dij = new int[N][N]; // 다익스트라 배열
-            boolean[][] iV = new boolean[N][N]; // bfs 방문 배열
             for (int r = 0; r < N; r++) {
                 StringTokenizer st = new StringTokenizer(br.readLine(), " ");
                 for (int c = 0; c < N; c++) {
@@ -50,7 +49,6 @@ public class Main {
             // 다익스트라 경로 탐색 (BFS 큐 + DP 메모이제이션)
             pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o1.cost, o2.cost));
             pq.offer(new Node(new int[]{0, 0}, arr[0][0]));
-            iV[0][0] = true;
 
             while (!pq.isEmpty()) {
                 Node curNode = pq.poll();
@@ -61,8 +59,7 @@ public class Main {
                     int nC = curNode.coords[1] + deltas[i][1];
 
 
-                    if (0 <= nR && nR < N && 0 <= nC && nC < N && !iV[nR][nC] && dij[nR][nC] > arr[nR][nC] + curNode.cost) {
-                        iV[nR][nC] = true;
+                    if (0 <= nR && nR < N && 0 <= nC && nC < N && dij[nR][nC] > arr[nR][nC] + curNode.cost) {
                         dij[nR][nC] = arr[nR][nC] + curNode.cost;
                         pq.offer(new Node(new int[]{nR, nC}, dij[nR][nC]));
                     }
