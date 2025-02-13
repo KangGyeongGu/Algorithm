@@ -1,3 +1,4 @@
+import java.util.*;
 import java.io.*;
 
 public class Main {
@@ -15,13 +16,14 @@ public class Main {
 		
 		fvC = N/5; thC = N/3; dp = new int[fvC+1][thC+1];
 		
-		System.out.println(calc());
+//		System.out.println(byDP());
+		System.out.println(byMath());
 		
 		br.close();
 	}
 	
 	// dp (Bottom-up, for-loop)
-	private static int calc() {
+	private static int byDP() {
 		// start from (fvC, thC)
 		for (int r = dp.length-1; r >= 0; r--) {
 			for (int c = dp[0].length-1; c >= 0; c--) {
@@ -30,5 +32,17 @@ public class Main {
 			}
 		}
 		return -1;
+	}
+	
+	private static int byMath() {
+		
+		if (N==4 || N==7) return -1;
+		
+		else if (N%5==1 || N%5==3) return N/5 + 1;
+		
+		else if (N%5==2 || N%5==4) return N/5 + 2;
+		
+		else return N/5;
+		
 	}
 }
