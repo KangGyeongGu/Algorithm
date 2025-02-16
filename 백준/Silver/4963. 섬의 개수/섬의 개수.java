@@ -20,7 +20,7 @@ public class Main {
 	
 	public static void main(String[] args) throws IOException {
 		while (true) {
-			if (init()) break;
+			if (!init()) break;
 			run();
 		}
 		System.out.println(sb);
@@ -62,14 +62,13 @@ public class Main {
 		return nr >= 0 && nr < H && nc >= 0 && nc < W && !iV[nr][nc] && map[nr][nc] != 0;
 	}
 	
-	
 	private static boolean init() throws IOException {
 		st = new StringTokenizer(br.readLine());
 		
 		W = Integer.parseInt(st.nextToken());
 		H = Integer.parseInt(st.nextToken());
 		
-		if (W==0 && H==0) return true;
+		if (W==0 && H==0) return false;
 		
 		map = new int[H][W];
 		iV = new boolean[H][W];
@@ -82,6 +81,6 @@ public class Main {
 				map[h][w] = Integer.parseInt(st.nextToken());
 			}
 		}
-		return false;
+		return true;
 	}
 }
