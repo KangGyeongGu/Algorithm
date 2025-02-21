@@ -12,37 +12,20 @@ public class Main {
 		System.out.println(sb);
 	}
 	
-	
 	static void permute(int depth, String currentNum) {
-		if (depth == N) {
-			// logic
-			
+		if (depth == N) { // check basis,
 			sb.append(currentNum).append('\n');
-			
 			return;
 		}
 		
-		for (int i = (depth > 0 ? 0 : 2); i <= 9; i++) { 
+		for (int i = (depth > 0 ? 0 : 2); i <= 9; i++) { // recursive call only if length N (1,2,3,4,..) number is prime,
 			if (isPrime(Integer.parseInt(currentNum+i))) permute(depth+1, currentNum + i);
 		}
 	}
 	
-	
-	static boolean isCuriousPrime(String s) {
-		for (int i = 1; i < s.length()+1; i++) {
-			int x = Integer.parseInt(s.substring(0, i));
-			if (!isPrime(x)) return false;
-		}
-		return true;
-	}
-	
-	static boolean isPrime(int a) {
+	static boolean isPrime(int a) { // check if the number is prime,
 		if (a == 1) return true;
-		
-		for (int i = 2; i < a; i++) {
-			if (a % i == 0) return false;
-		}
-		
+		for (int i = 2; i < a; i++) if (a % i == 0) return false;
 		return true;
 	}
 }
