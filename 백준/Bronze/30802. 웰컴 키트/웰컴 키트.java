@@ -1,27 +1,43 @@
+import java.io.*;
 import java.util.Scanner;
+
 public class Main {
-	public static void main(String[] args) {
-		
+	
+	static int N, T, P, topC, penGC, penEC;
+	static int[] tops = new int[6];
+	
+	public static void main(String[] args) throws IOException {
+		init();
+		topsCount();
+		penCount();
+		System.out.println(topC);
+		System.out.println(penGC + " " + penEC);
+	}
+	
+	
+	static void topsCount() {
+		for (int i = 0; i < tops.length; i++) {
+			topC += tops[i] / T;
+			if (tops[i] % T != 0) topC++;
+		}
+	}
+	
+	static void penCount() {
+		penGC = N / P;
+		penEC = N % P;
+	}
+	
+	static void init() {
 		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
 		
-		int n = sc.nextInt();
-		int[] a = new int[6];
+		for (int i = 0; i < tops.length; i++) tops[i] = sc.nextInt();
 		
-		for(int i = 0; i < 6; i++) {
-			a[i] = sc.nextInt();
-		}
-		int t = sc.nextInt();
-		int p = sc.nextInt();
+		T = sc.nextInt();
+		P = sc.nextInt();
 		
-		int count = 0;
-		for(int i = 0; i < 6; i++) {
-			count += a[i] / t;
-			if(a[i] % t != 0) {
-				count++;
-			}
-		}
-		System.out.println(count);
-		System.out.println(n / p + " " + n % p);
 		sc.close();
 	}
+	
+	
 }
