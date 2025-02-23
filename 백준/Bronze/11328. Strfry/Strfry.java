@@ -8,7 +8,7 @@ public class Main {
 	static StringTokenizer st;
 	
 	static int N;
-	static int[] origin, fry;
+	static int[] origin;
 	
     public static void main(String[] args) throws IOException {
     	
@@ -19,15 +19,26 @@ public class Main {
     		Boolean flag = true;
 			
 			String in = st.nextToken(); origin = new int[26];
-    		for (int j = 0; j < in.length(); j++) origin[in.charAt(j)-97]++;
+    		for (int j = 0; j < in.length(); j++) {
+    			origin[in.charAt(j)-97]++;
+    		}
 			
-    		in = st.nextToken(); fry = new int[26];
-    		for (int j = 0; j < in.length(); j++) fry[in.charAt(j)-97]++;
+    		in = st.nextToken();
+    		for (int j = 0; j < in.length(); j++) {
+    			origin[in.charAt(j)-97]--;
+    		}
 			
-    		for (int j = 0; j < 26; j++) if (origin[j] != fry[j]) flag = false;
+    		for (int j = 0; j < 26; j++) {
+    			if (origin[j] != 0) {
+    				flag = false;
+    			}
+    		}
     		
-			if (flag) sb.append("Possible\n");
-			else sb.append("Impossible\n");
+			if (flag) {
+				sb.append("Possible\n");
+			} else {
+				sb.append("Impossible\n");
+			}
 		}
     	
     	System.out.println(sb);
