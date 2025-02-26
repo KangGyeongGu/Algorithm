@@ -12,19 +12,24 @@ public class Solution {
 	static boolean[] iv;
 	
 	public static void main(String[] args) throws IOException {
+
 		T = Integer.parseInt(br.readLine());
 		
 		for (int tc = 1; tc <= T; tc++) {
 			init(tc);
-			run();
+			// subsetRun();
+			dfsRun();
 		}
 		System.out.println(sb);
-        br.close();
+	}
+
+	private static void subsetRun() {
+		subSet(0);
+		sb.append(min).append('\n');
 	}
 	
-	// test case run,
-	private static void run() {
-		subSet(0);
+	private static void dfsRun() {
+		dfs(0, 0);
 		sb.append(min).append('\n');
 	}
 
@@ -41,6 +46,19 @@ public class Solution {
 		
 		iv[depth] = false;
 		subSet(depth+1);
+	}
+	
+	private static void dfs(int depth, int sum) {
+		if (sum >= B) { // (pruning) there's no need to keep update subset elems if current sum satisfies the condition,
+			if (sum-B >= min) return; // (pruning) if current answer exceeds current min diff, ignore this case,
+			min = Math.min(min, sum-B); // update min diff
+			return;
+		}
+		
+		if (depth == N) return;
+		
+		dfs(depth+1, sum+heights[depth]);
+		dfs(depth+1, sum);
 	}
 	
 	// calculate each subsets' height sum,
