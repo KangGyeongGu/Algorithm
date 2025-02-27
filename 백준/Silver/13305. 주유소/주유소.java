@@ -6,9 +6,9 @@ public class Main {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
 	
-	static int N, cost;
+	static int N;
+	static long cost;
 	static int[][] info;
-	static List<int[]> road = new ArrayList<>();
 	
 	public static void main(String[] args) throws IOException {
 		init();
@@ -17,19 +17,11 @@ public class Main {
 	}
 
 	private static void greedy() {
-		int[] cur = road.get(0);
+		long minPrice = info[1][0];
 		
-		for (int i = 1; i < N; i++) {
-			int[] next = road.get(i);
-			
-			if (cur[1] > next[1]) {
-				cost += cur[1] * next[0];
-				cur = next;
-			}
-			
-			else if (cur[1] <= next[1]) {
-				cost += cur[1] * next[0];
-			}
+		for (int i = 0; i < N-1; i++) {
+			minPrice = Math.min(minPrice, info[1][i]);
+			cost += minPrice * info[0][i];
 		}
 	}
 	
@@ -38,12 +30,10 @@ public class Main {
 		info = new int[2][N];
 		
 		st = new StringTokenizer(br.readLine());
-		for (int i = 1; i < N; i++) info[0][i] = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < N-1; i++) info[0][i] = Integer.parseInt(st.nextToken());
 		
 		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < N; i++) info[1][i] = Integer.parseInt(st.nextToken());
-		
-		for (int i = 0; i < N; i++) road.add(new int[] {info[0][i], info[1][i]});
 		
 		br.close();
 	}
