@@ -32,7 +32,9 @@ public class Main {
 	
 	private static void permutation(int depth) {
 		if (depth == M) {
-			sb.append(Arrays.toString(noc).replaceAll("[\\[\\]\\,]", "")).append('\n');
+			for (int i = 0; i < M; i++) {
+				sb.append(noc[i]).append(' ');
+			} sb.append('\n');
 			return ;
 		}
 		
