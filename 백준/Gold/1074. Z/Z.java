@@ -18,12 +18,11 @@ public class Main {
 		System.out.println(cnt);
 	}
 	
-	
 	private static void recursive(int N, int r, int c) {
 		if (N==0) return;
 		
-		int half = (int)Math.pow(2, N-1);
-		int quadrantSize = (int)Math.pow(half, 2);
+		int half = (int)Math.pow(2, N-1); // 사분면 분할을 위한 중심
+		int quadrantSize = (int)Math.pow(half, 2); // 한 개 사분면의 크기 (인덱스 개수)
 		
 		// quadrant 1
 		if (r<half && c>=half) {
