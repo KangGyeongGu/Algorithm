@@ -1,91 +1,84 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
+
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
 	
-	public static final int[][] DIR = { {1,0}, {-1,0}, {0,1}, {0,-1} }; 
-	static int N, min, max, tMax, count;
-	static int[][] map, tmp;
-	static boolean[][] iV;
-	static Stack<int[]> stack;
+	static final int[][] DIR = {{0,1}, {0,-1}, {1,0}, {-1,0} };
 	
+	static int N, maxDust, minDust, answer;
+	static int[][] map;
+	static boolean[][] iV;
+		
 	public static void main(String[] args) throws IOException {
 		init();
-		runAll();
-		System.out.println(tMax);
+		simulation();
+		System.out.println(answer);
 	}
 	
-	private static void runAll() {
-		for (int tc = 0; tc <= 100; tc++) {
-			initEachCase(tc);
-			runEachCase();
-			tMax = Math.max(count, tMax);
+	private static void simulation() {
+		for (int i = 0; i < maxDust; i++) {
+			answer = Math.max(answer, run(i));
 		}
 	}
 	
-	private static void initEachCase(int tc) {
-		for (int r = 0; r < N; r++) {
-			for (int c = 0; c < N; c++) {
-				tmp[r][c] = map[r][c] - tc;  
-			}
-		}
+	private static int run(int upperBound) {
+		int noc = 0;
 		iV = new boolean[N][N];
-		count = 0;
-	}
-	
-	private static void runEachCase() {
 		for (int r = 0; r < N; r++) {
 			for (int c = 0; c < N; c++) {
-				if (tmp[r][c] > 0 && !iV[r][c]) {
-					iV[r][c] = true;
-					dfs(r, c);
-					count++;
-				}
+				if (map[r][c] <= upperBound || iV[r][c]) continue;
+				iV[r][c] = true;
+				bfs(r,c, upperBound);
+				noc++;
 			}
 		}
+		return noc;
 	}
 	
-	private static void dfs(int r, int c) {
-		stack = new Stack<>();
-		stack.push(new int[] {r, c});
+	private static void bfs(int startx, int starty, int upperBound) {
+		Queue<int[]> q = new ArrayDeque<>();
+		q.offer(new int[] {startx, starty});
 		
-		while (!stack.isEmpty()) {
-			int[] curP = stack.pop();
-			int cr = curP[0]; int cy = curP[1];
+		while (!q.isEmpty()) {
+			int[] cur = q.poll();
+			int cx = cur[0]; int cy = cur[1];
 			
 			for (int[] dir : DIR) {
-				int nr = cr + dir[0]; int nc = cy + dir[1];
+				int nx = cx + dir[0]; int ny = cy + dir[1];
 				
-				if (!isValidCoords(nr, nc)) continue;
+				if (!isValidPosition(nx, ny, upperBound)) continue;
 				
-				iV[nr][nc] = true;
-				stack.push(new int[] {nr, nc});
+				iV[nx][ny] = true;
+				q.offer(new int[] {nx, ny});
 			}
 		}
 	}
 	
-	private static boolean isValidCoords(int nr, int nc) {
-		return 0 <= nr && nr < N && 0 <= nc && nc < N && !iV[nr][nc] && tmp[nr][nc] > 0;
+	private static boolean isValidPosition(int nx, int ny, int upperBound) {
+		return 0 <= nx && nx < N && 0 <= ny && ny < N && !iV[nx][ny] && map[nx][ny] > upperBound;
 	}
 	
 	private static void init() throws IOException {
 		N = Integer.parseInt(br.readLine());
 		
-		map = new int[N][N];
-		tmp = new int[N][N];
+		answer = Integer.MIN_VALUE; maxDust = Integer.MIN_VALUE; minDust = Integer.MAX_VALUE;
+		
 		iV = new boolean[N][N];
-		
-		min = Integer.MAX_VALUE; max = Integer.MIN_VALUE;
-		
+		map = new int[N][N];
 		for (int r = 0; r < N; r++) {
 			st = new StringTokenizer(br.readLine());
 			for (int c = 0; c < N; c++) {
 				int in = Integer.parseInt(st.nextToken());
-				map[r][c] = in; 
-				min = Math.min(min, in);
-				max = Math.max(max, in);
+				map[r][c] = in;
+				maxDust = Math.max(maxDust, in);
+				minDust = Math.min(minDust, in);
 			}
 		}
 	}
