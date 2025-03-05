@@ -13,13 +13,14 @@ public class Main {
 	static PriorityQueue<int[]> PQ = new PriorityQueue<>((o1,o2)->o1[1]-o2[1]);
 	
 	public static void main(String[] args) throws IOException {
+		
 		N = Integer.parseInt(br.readLine());
 		M = Integer.parseInt(br.readLine());
 		
 		djk = new int[N+1];
 		iv = new boolean[N+1];
-
-        for (int i = 0; i <= N; i++) {
+		
+		for (int i = 0; i <= N; i++) {
 			adj.add(new ArrayList<>());
 			djk[i] = Integer.MAX_VALUE; 
 		}
@@ -29,7 +30,7 @@ public class Main {
 			int u = Integer.parseInt(st.nextToken());
 			int v = Integer.parseInt(st.nextToken());
 			int w = Integer.parseInt(st.nextToken());
-            
+			
 			adj.get(u).add(new int[] {v, w});
 		}
 		
@@ -42,7 +43,7 @@ public class Main {
 	}
 	
 	private static void dijkstra(int stx) {
-		PQ.add(new int[] {stx, 0});
+		PQ.offer(new int[] {stx, 0});
 		djk[stx] = 0;
 		
 		while (!PQ.isEmpty()) {
@@ -53,10 +54,11 @@ public class Main {
 			iv[cur[0]] = true;
 			
 			for (int[] next : adj.get(cur[0])) {
+				
 				if (iv[next[0]] || djk[next[0]] <= cur[1] + next[1]) continue;
 				
 				djk[next[0]] = cur[1] + next[1];
-				PQ.add(new int[] { next[0], djk[next[0]] });
+				PQ.offer(new int[] { next[0], djk[next[0]] });
 			}
 		}
 	}
