@@ -14,14 +14,33 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		init();
 		run();
-		
 	}
 	
 	private static void run() {
-		for (int op : OP) {
-			rotate(op);
-		}
-		print();
+		List<Integer> filteredOps = new ArrayList<>();
+	    
+	    for (int i = 0; i < OP.length; i++) {
+	        if (filteredOps.isEmpty()) {
+	            filteredOps.add(OP[i]);
+	        } else {
+	            int lastOp = filteredOps.get(filteredOps.size() - 1);
+	            if (isOppositeOperation(lastOp, OP[i])) {
+	                filteredOps.remove(filteredOps.size() - 1); 
+	            } else {
+	                filteredOps.add(OP[i]);
+	            }
+	        }
+	    }
+
+	    for (int op : filteredOps) {
+	        rotate(op);
+	    }
+	    print();
+	}
+	
+	private static boolean isOppositeOperation(int op1, int op2) {
+	    return (op1 == 3 && op2 == 4) || (op1 == 4 && op2 == 3) ||
+	           (op1 == 5 && op2 == 6) || (op1 == 6 && op2 == 5);
 	}
 	
 	private static void rotate(int operator) {
