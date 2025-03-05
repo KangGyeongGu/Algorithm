@@ -13,7 +13,32 @@ public class Main {
 	static PriorityQueue<int[]> PQ = new PriorityQueue<>((o1,o2)->o1[1]-o2[1]);
 	
 	public static void main(String[] args) throws IOException {
+		init();	
+		dijkstra(stx);
+		System.out.println(djk[etx]);
+	}
+	
+	private static void dijkstra(int stx) {
+		PQ.offer(new int[] {stx, 0});
+		djk[stx] = 0;
 		
+		while (!PQ.isEmpty()) {
+			int[] cur = PQ.poll();
+			
+			if (iv[cur[0]]) continue;
+			
+			iv[cur[0]] = true;
+			
+			for (int[] next : adj.get(cur[0])) {
+				if (iv[next[0]] || djk[next[0]] <= cur[1] + next[1]) continue;
+				
+				djk[next[0]] = cur[1] + next[1];
+				PQ.offer(new int[] { next[0], djk[next[0]] });
+			}
+		}
+	}
+	
+	private static void init() throws IOException {
 		N = Integer.parseInt(br.readLine());
 		M = Integer.parseInt(br.readLine());
 		
@@ -37,29 +62,5 @@ public class Main {
 		st = new StringTokenizer(br.readLine());
 		stx = Integer.parseInt(st.nextToken());
 		etx = Integer.parseInt(st.nextToken());
-		
-		dijkstra(stx);
-		System.out.println(djk[etx]);
-	}
-	
-	private static void dijkstra(int stx) {
-		PQ.offer(new int[] {stx, 0});
-		djk[stx] = 0;
-		
-		while (!PQ.isEmpty()) {
-			int[] cur = PQ.poll();
-			
-			if (iv[cur[0]]) continue;
-			
-			iv[cur[0]] = true;
-			
-			for (int[] next : adj.get(cur[0])) {
-				
-				if (iv[next[0]] || djk[next[0]] <= cur[1] + next[1]) continue;
-				
-				djk[next[0]] = cur[1] + next[1];
-				PQ.offer(new int[] { next[0], djk[next[0]] });
-			}
-		}
 	}
 }
