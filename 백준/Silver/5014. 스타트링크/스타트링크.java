@@ -1,51 +1,42 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-
-	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	static StringTokenizer st;
-	
-	static int F, S, G, U, D;
-	static int[] dist;
-	static boolean[] iv;
-	static Queue<Integer> Q = new ArrayDeque<>();
-	
-	public static void main(String[] args) throws IOException {
-		st = new StringTokenizer(br.readLine());
-		F = Integer.parseInt(st.nextToken());
-		S = Integer.parseInt(st.nextToken());
-		G = Integer.parseInt(st.nextToken());
-		U = Integer.parseInt(st.nextToken());
-		D = Integer.parseInt(st.nextToken());
-		
-		dist = new int[F+1];
-		iv = new boolean[F+1]; // 1-based
-		Q.offer(S); // start from current floor, S.
-		
-		Arrays.fill(dist, -1); // if not visited floor, button click count == -1
-		dist[S] = 0;  
-		iv[S] = true; // start floor visited check. 
-		
-		while (!Q.isEmpty()) {
-			int cur = Q.poll();
-			
-			int UPbtn = cur + U;
-			if (UPbtn <= F && !iv[UPbtn]) {
-				iv[UPbtn] = true;
-				dist[UPbtn] = dist[cur] + 1;
-				Q.offer(UPbtn);
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+		int F = Integer.parseInt(st.nextToken());
+		int S = Integer.parseInt(st.nextToken());
+		int G = Integer.parseInt(st.nextToken());
+		int U = Integer.parseInt(st.nextToken());
+		int D = Integer.parseInt(st.nextToken());
+		if ((S < G && U == 0) || (S > G && D == 0)) {
+			System.out.print("use the stairs");
+			return;
+		}
+		boolean[] visit = new boolean[F + 1];
+		int ans = 0;
+		while (S != G) {
+			if (visit[S]) {
+				System.out.print("use the stairs");
+				return;
 			}
-			
-			int DOWNbtn = cur - D;
-			if(DOWNbtn >= 1 && !iv[DOWNbtn]) {
-				iv[DOWNbtn] = true;
-				dist[DOWNbtn] = dist[cur] + 1;
-				Q.offer(DOWNbtn);
+			visit[S] = true;
+			ans++;
+			if (S < G && S + U <= F)
+				S += U;
+			else if (S > G && S - D > 0)
+				S -= D;
+			else if (S < G && S - D > 0)
+				S -= D;
+			else if (S > G && S + U <= F)
+				S += U;
+			else {
+				System.out.print("use the stairs");
+				return;
 			}
 		}
-		
-		if (dist[G]!= -1) System.out.println(dist[G]);
-		else System.out.println("use the stairs");
+		System.out.print(ans);
 	}
 }
