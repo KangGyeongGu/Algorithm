@@ -26,30 +26,34 @@ public class Solution {
 		System.out.println(sb);
 	}
 	
+	/* 
+	 * There's condition that the input is clearly DAG,
+	 * so we don't need to check if the graph is DAG.
+	 * */
 	private static void topologySort() {
 		while (!Q.isEmpty()) {
 			int node = Q.poll();
-			sb.append(node + " ");
+			sb.append(node + " "); // directly save this node,
 			
 			for (int edge : dag.get(node)) {
-				inDegree[edge]--;
-				if (inDegree[edge]==0) {
-					Q.offer(edge);
+				if (--inDegree[edge]==0) { // (1) reduce the count of indegree by one and check if this Vertex is now has no indgree.
+					Q.offer(edge); // (2) if it is, add this to the Queue.
 				}
 			}
 		}
 		sb.append('\n');
 	}
 	
+	/* test case initialization */
 	private static void init(int tc) throws IOException {
 		sb.append("#" + tc + " ");
 		st = new StringTokenizer(br.readLine());
 		V = Integer.parseInt(st.nextToken());
 		E = Integer.parseInt(st.nextToken());
 		
-		inDegree = new int[V+1];
-		dag = new ArrayList<>();
-		for (int v = 0; v <= V; v++) {
+		inDegree = new int[V+1]; // array for count indegrees of each Vertex,
+		dag = new ArrayList<>(); // directed acyclic graph as adjacency list
+		for (int v = 0; v <= V; v++) { 
 			dag.add(new ArrayList<>());
 		}
 		
@@ -57,11 +61,11 @@ public class Solution {
 		for (int e = 0; e < E; e++) {
 			int u = Integer.parseInt(st.nextToken());
 			int v = Integer.parseInt(st.nextToken());
-			dag.get(u).add(v);
-			inDegree[v]++;
+			dag.get(u).add(v); // note Edge info
+			inDegree[v]++;	// count current Vertex's indegree
 		}
 		
-		for (int v = 1; v <= V; v++) {
+		for (int v = 1; v <= V; v++) { // find Vertexes that has no indegree
 			if (inDegree[v]==0) {
 				Q.offer(v);
 			}
