@@ -22,25 +22,11 @@ public class Main {
 		while (!Q.isEmpty()) {
 			int vertex = Q.poll();
 			sb.append(vertex + " ");
-			inDegree[vertex] = -1;
 			
 			for (int edge : dag.get(vertex)) {
-				inDegree[edge]--;
-				if (inDegree[edge]==0) {
-					if (dag.get(edge).isEmpty()) {
-						sb.append(edge + " ");
-						inDegree[edge] = -1;
-						continue;
-					}
+				if (--inDegree[edge] == 0) {
 					Q.offer(edge); 
-					inDegree[edge] = -1;
 				}
-			}
-		}
-		
-		for (int i = 1; i <= N; i++) {
-			if (inDegree[i] == 0) {
-				sb.append(i + " ");
 			}
 		}
 		
