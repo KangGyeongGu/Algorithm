@@ -16,6 +16,11 @@ public class Main {
 	}
 	
 	private static void divideAndConquerRecursive(int r, int c, int n) {
+        if(n==1) {
+			ANS[sheet[r][c]+1]++;
+			return;
+		}
+        
 		if (isValid(r, c, n)) {
 			ANS[sheet[r][c]+1]++;
 			return;
