@@ -80,30 +80,33 @@ public class Main {
 	}
 	
 	private static void init() throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		P = Integer.parseInt(st.nextToken());
+		N = read();
+		M = read();
+		P = read();
 		
 		sp = new int[P+1];
-		st = new StringTokenizer(br.readLine());
 		for (int i = 1; i <= P; i++) {
-			sp[i] = Integer.parseInt(st.nextToken());
+			sp[i] = read();
 		}
 		
 		iv = new boolean[N][M];
 		map = new char[N][M];
+		
 		for (int r = 0; r < N; r++) {
-			char[] in = br.readLine().toCharArray();
 			for (int c = 0; c < M; c++) {
-				map[r][c] = in[c]; 
+				map[r][c] = (char) System.in.read(); 
 				if (map[r][c] != '.' && map[r][c] != '#') {
 					iv[r][c] = true;
-					Q.offer(new Node(r, c, in[c], 0, sp[in[c]-'0']));
+					Q.offer(new Node(r, c, map[r][c], 0, sp[map[r][c]-'0']));
 				}
 			}
+			System.in.read(); 
 		}
 	}
+	
+	static int read() throws IOException {
+        int c, n = System.in.read() & 15;
+        while ((c = System.in.read()) > 32) n = (n << 3 ) + (n << 1) + (c & 15);
+        return n;
+    }
 }
