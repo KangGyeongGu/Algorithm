@@ -47,7 +47,7 @@ public class Main {
 			int nr = r + dir[0];
 			int nc = c + dir[1];
 			
-			if (!isValid(nr, nc) || cluster[nr][nc] == 0 || map[nr][nc] != '0') continue;
+			if (isOutOfArray(nr, nc) || cluster[nr][nc] == 0) continue;
 			
 			clusterSet.add(cluster[nr][nc]);	
 		}
@@ -87,7 +87,7 @@ public class Main {
 				int nr = cur.r + dir[0];
 				int nc = cur.c + dir[1];
 				
-				if (!isValid(nr, nc) || !isCluster(nr, nc)) continue;
+				if (isOutOfArray(nr, nc) || isNotCluster(nr, nc)) continue;
 				
 				Q.offer(new Node(nr, nc));
 				cluster[nr][nc] = clusterIdx;
@@ -98,12 +98,12 @@ public class Main {
 		return clusterSize;
 	}
 	
-	private static boolean isValid(int nr, int nc) {
-		return 0 <= nr && nr < N && 0 <= nc && nc < M;
+	private static boolean isOutOfArray(int nr, int nc) {
+		return N <= nr || nr < 0 || M <= nc || nc < 0;
 	}
 	
-	private static boolean isCluster(int nr, int nc) {
-		return map[nr][nc] == '0' && cluster[nr][nc] == 0; 
+	private static boolean isNotCluster(int nr, int nc) {
+		return map[nr][nc] != '0' || cluster[nr][nc] != 0; 
 	}
 	
 	private static void init() throws IOException {
