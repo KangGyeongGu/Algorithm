@@ -16,7 +16,7 @@ public class Main {
 	static final int UPPERBOUND = 100000;
 	static int N, K, ANS;
 	static boolean[] iv = new boolean[UPPERBOUND+1];
-	static Queue<Node> Q = new ArrayDeque<>();
+	static Deque<Node> Q = new ArrayDeque<>();
 	
 	public static void main(String[] args) throws IOException {
 		init();
@@ -36,15 +36,15 @@ public class Main {
 			}
 			
 			int teleport = cur.x * 2; // 순간이동 시 0초 후 이동하므로, cur.time 그대로 진행
-			if (teleport <= UPPERBOUND && !iv[teleport]) Q.offer(new Node(teleport, cur.time));
+			if (teleport <= UPPERBOUND && !iv[teleport]) Q.offerFirst(new Node(teleport, cur.time));
 			
 			
 			int forward = cur.x + 1;
-			if (forward <= UPPERBOUND && !iv[forward]) Q.offer(new Node(forward, cur.time+1));
+			if (forward <= UPPERBOUND && !iv[forward]) Q.offerLast(new Node(forward, cur.time+1));
 			
 			
 			int backward = cur.x - 1;
-			if (backward >= 0 && !iv[backward]) Q.offer(new Node(backward, cur.time+1));
+			if (backward >= 0 && !iv[backward]) Q.offerLast(new Node(backward, cur.time+1));
 			
 		}
 	}
