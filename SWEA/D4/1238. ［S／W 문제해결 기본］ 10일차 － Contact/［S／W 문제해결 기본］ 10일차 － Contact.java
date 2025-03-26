@@ -18,11 +18,10 @@ public class Solution {
 		for (int tc = 1; tc <= T; tc++) {
 			init(tc);
 			bfs(start);
-			sb.append(result.get(result.size()-2)).append('\n');
+			sb.append(result.get(result.size()-1)).append('\n');
 		}
 		System.out.println(sb);
 	}
-	
 	
 	private static void bfs(int startNode) {
 		Q = new ArrayDeque<>();
@@ -39,12 +38,14 @@ public class Solution {
 				
 				for (int next : adj.get(cur)) {
 					if (iv[next]) continue;
+					
 					iv[next] = true;
 					max = Math.max(max, next);
 					Q.offer(next);
 				}
 			}
-			result.add(max);
+			
+			if (max != Integer.MIN_VALUE) result.add(max);
 		}
 	}
 	
@@ -52,7 +53,6 @@ public class Solution {
 		sb.append("#" + tc + " ");
 		
 		st = new StringTokenizer(br.readLine());
-		
 		N = Integer.parseInt(st.nextToken());
 		start = Integer.parseInt(st.nextToken());
 		
