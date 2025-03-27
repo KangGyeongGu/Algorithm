@@ -16,12 +16,12 @@ public class Main {
 		
 		@Override
 		public int compareTo(Edge o) {
-			return this.w - o.w;
+			return Integer.compare(this.w, o.w);
 		}
 	}
 	
 	static int V, E;
-	static int[] sets = new int[10001];
+	static int[] sets;
 	static List<Edge> list = new ArrayList<>();
 	
 	
@@ -36,7 +36,7 @@ public class Main {
 		for (int i = 0; i < E; i++) {
 			Edge curE = list.get(i);
 			
-			if (!union(curE)) continue;
+			if (!union(curE.u, curE.v)) continue;
 			
 			ANS += curE.w;
 			CNT++;
@@ -52,15 +52,15 @@ public class Main {
 		return sets[x] = find(sets[x]);
 	}
 	
-	static boolean union(Edge e) {
-		e.u = find(e.u);
-		e.v = find(e.v);
-		
-		if (e.u == e.v) return false;
-		if (sets[e.u] == sets[e.v]) sets[e.u]--;
-		if (sets[e.u] < sets[e.v]) sets[e.v] = e.u;
-		else sets[e.u] = e.v;
-		return true;
+	static boolean union(int a, int b) {
+		a = find(a);
+	    b = find(b);
+
+	    if (a == b) return false;
+	    if (sets[a] == sets[b]) sets[a]--;
+	    if (sets[a] < sets[b]) sets[b] = a;
+	    else sets[a] = b;
+	    return true;
 	}
 	
 	static void init() throws IOException {
@@ -80,6 +80,7 @@ public class Main {
         
         Collections.sort(list);
         
+        sets = new int[V+1];
         Arrays.fill(sets, -1);
 	}
 }
