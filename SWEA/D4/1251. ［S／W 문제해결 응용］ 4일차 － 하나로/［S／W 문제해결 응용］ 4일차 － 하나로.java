@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class Solution {
-
+	
 	static class Island {
 		int x, y, id;
 		public Island(int x, int y, int id) {
@@ -12,30 +12,26 @@ public class Solution {
 		}
 	}
 	
-	static class Tunnel implements Comparable<Tunnel> {
-		Island u, v;
-		long l;
+	static class Edge implements Comparable<Edge> {
+		int v;
+		long w;
 		
-		public Tunnel(Island u, Island v) {
-			this.u = u;
+		public Edge(int v, long w) {
 			this.v = v;
-			this.l = calcDist();
-		}
-		
-		private long calcDist() {
-			return (long) (Math.pow(u.x - v.x, 2) + Math.pow(u.y - v.y, 2));
+			this.w = w;
 		}
 		
 		@Override
-		public int compareTo(Tunnel o) {
-			return Double.compare(this.l, o.l);
+		public int compareTo(Edge o) {
+			return Long.compare(this.w, o.w);
 		}
 	}
 	
 	static int T, N;
 	static double RATE;
-	static int[] set;
-	static PriorityQueue<Tunnel> PQ = new PriorityQueue<>();
+	static List<List<Edge>> graph;
+	static boolean[] visited;
+	static PriorityQueue<Edge> pq;
 	
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringBuilder sb = new StringBuilder();
@@ -44,46 +40,34 @@ public class Solution {
 	public static void main(String[] args) throws IOException {
 		T = Integer.parseInt(br.readLine());
 		for (int tc = 1; tc <= T; tc++) {
-			init(tc);
-			kruskal(tc);
+			init();
+			sb.append("#").append(tc).append(" ").append(prim()).append("\n");
 		}
 		System.out.println(sb);
 	}
 	
-	private static void kruskal(int tc) {
+	private static long prim() {
 		long ans = 0;
 		int cnt = 0;
 		
-		while (!PQ.isEmpty() && cnt < N-1) {
-			Tunnel curT = PQ.poll();
+		pq.offer(new Edge(0, 0)); 
+		while (!pq.isEmpty() && cnt < N) {
+			Edge cur = pq.poll();
 			
-			if (!union(curT.u.id, curT.v.id)) continue;
-			
-			ans += curT.l;
+			if (visited[cur.v]) continue;
+			visited[cur.v] = true;
+			ans += cur.w;
 			cnt++;
+			
+			for (Edge next : graph.get(cur.v)) {
+				if (!visited[next.v]) pq.offer(next);
+			}
 		}
 		
-		sb.append("#" + tc + " " + Math.round(RATE * ans) + '\n');
+		return Math.round(RATE * ans);
 	}
 	
-	private static int find(int x) {
-		if (set[x] < 0) return x;
-		return set[x] = find(set[x]);
-	}
-	
-	private static boolean union(int a, int b) {
-		a = find(a);
-		b = find(b);
-		
-		if (a==b) return false;
-		if (set[a]==set[b]) set[a]--;
-		if(set[a]<set[b]) set[b] = a;
-		else set[a] = b;
-		return true;
-	}
-	
-	private static void init(int tc) throws IOException {
-		
+	private static void init() throws IOException {
 		N = Integer.parseInt(br.readLine());
 		
 		int[] xCoords = new int[N];
@@ -92,27 +76,30 @@ public class Solution {
 		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < N; i++) xCoords[i] = Integer.parseInt(st.nextToken());
 		
-		
 		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < N; i++) yCoords[i] = Integer.parseInt(st.nextToken());
 		
-		
-		List<Island> islands = new ArrayList<>(N); 
-		int idx = 0; 
-		for (int i = 0; i < N; i++) islands.add(new Island(xCoords[i], yCoords[i], idx++));
-		
+		List<Island> islands = new ArrayList<>(N);
+		for (int i = 0; i < N; i++) islands.add(new Island(xCoords[i], yCoords[i], i));
 		
 		RATE = Double.parseDouble(br.readLine());
 		
-		PQ.clear();
+		graph = new ArrayList<>();
+		for (int i = 0; i < N; i++) graph.add(new ArrayList<>());
+		
 		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if (i==j) continue;
-				PQ.offer(new Tunnel(islands.get(i), islands.get(j)));
+			for (int j = i + 1; j < N; j++) {
+				long dist = calcDist(islands.get(i), islands.get(j));
+				graph.get(i).add(new Edge(j, dist));
+				graph.get(j).add(new Edge(i, dist));
 			}
 		}
 		
-		set = new int[N+1];
-		Arrays.fill(set, -1);
+		visited = new boolean[N];
+		pq = new PriorityQueue<>();
+	}
+	
+	private static long calcDist(Island a, Island b) {
+		return (long) (Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	}
 }
