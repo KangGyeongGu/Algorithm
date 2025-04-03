@@ -33,9 +33,9 @@ public class Main {
 		dp[0] = dp[1] = 0;
 		
 		for (int i = 2; i <= N; i++) {
-			dp[i] = dp[i-1] + 1;
-			if (i % 2 == 0) dp[i] = Math.min(dp[i], dp[i/2]+1);
-			if (i % 3 == 0) dp[i] = Math.min(dp[i], dp[i/3]+1);
+			dp[i] = dp[i-1] + 1; // N 값에서 N-1 값이 되는 방법과 동일함 == N-1의 최소 연산 수 + 1회 == N의 최소 연산 
+			if (i % 2 == 0) dp[i] = Math.min(dp[i], dp[i/2]+1); // x-1 보다 /2 가 더 적은 연산 횟수를 반환하는지 확인
+			if (i % 3 == 0) dp[i] = Math.min(dp[i], dp[i/3]+1); // x-1 보다 /3 가 더 적은 연산 횟수를 반환하는지 확인
 		}
 		
 		System.out.println(dp[N]);
