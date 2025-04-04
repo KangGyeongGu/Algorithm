@@ -1,38 +1,30 @@
-import java.util.Scanner;
+import java.io.*;
 
 public class Main {
 	
-	/* (1) nCr = n-1Cr-1 + n-1Cr
-	 * (2) nC0 = nCn = 1
-	 * */
+	static int T, N, M, dp[][] = new int[30][30];
+	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 	
-	static int[][] dp = new int[30][30];
+	private static int read() throws Exception {
+		int c, n = System.in.read() & 15;
+		while (( c = System.in.read()) >= 48) n = (n << 3) + (n << 1) + (c & 15);
+		if (c==13) System.in.read();
+		return n;
+	}
 	
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-
-		int T = sc.nextInt();
-		
-		while(T-- > 0) {
-			int N = sc.nextInt();
-			int M = sc.nextInt();
-			
-			int R = cb(M, N);
-			System.out.println(R);
+	private static int dp(int m, int n) {
+		if (dp[m][n] > 0) return dp[m][n];
+		if (m==n || n==0) return dp[m][n] = 1;
+		return dp[m][n] = dp(m-1, n-1) + dp(m-1, n);
+	}
+	
+	public static void main(String[] args) throws Exception {
+		T = read();
+		while (T-->0) {
+			N = read();
+			M = read();
+			bw.write(dp(M, N) + "\n");
 		}
-		
+		bw.flush(); bw.close();
 	}
-	
-	/* (1)Memoization할 배열 사이즈 선택 시, 기재된 입력 크기를 정확히 확인해야 한다.
-	 * (2) DP + Mem 이용 시, 항상 Mem에 기존 값이 있는 경우 바로 값을 반환해주는 로직이 필요하다.
-	 * (3) Memoization할 배열 사이즈 선택 시, 기재된 입력 크기를 정확히 확인해야 한다.
-	 * */
-	static int cb(int M, int N) {
-		if(dp[M][N] > 0) return dp[M][N];
-		
-		if (M==N || N==0) return dp[M][N] = 1;
-		
-		return dp[M][N] = cb(M-1, N-1) + cb(M-1, N);
-	}
-	
 }
