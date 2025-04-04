@@ -2,10 +2,8 @@ import java.util.*;
 import java.io.*;
 
 public class Solution {
-    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringBuilder sb = new StringBuilder();
-    static StringTokenizer st;
-
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    
     static class Customer {
         int customerId, recepId, repairId, arrivedTime, remainingTime;
 
@@ -24,31 +22,29 @@ public class Solution {
     static Customer[] recepDesk, repairDesk;
     static int answer;
 
-    private static void init() throws IOException {
-        st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken()); // 접수 창구 개수
-        M = Integer.parseInt(st.nextToken()); // 정비 창구 개수
-        K = Integer.parseInt(st.nextToken()); // 고객 수
-        A = Integer.parseInt(st.nextToken()); // 지갑을 두고 간 접수 창구
-        B = Integer.parseInt(st.nextToken()); // 지갑을 두고 간 정비 창구
+    private static int read() throws Exception {
+        int c, n = System.in.read() & 15;
+        while ((c = System.in.read()) >= 48)
+            n = (n << 3) + (n << 1) + (c & 15);
+        if (c == 13) System.in.read(); 
+        return n;
+    }
+
+    private static void init() throws Exception {
+        N = read(); M = read(); K = read(); A = read(); B = read();
 
         recepTime = new int[N + 1];
         repairTime = new int[M + 1];
 
-        st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= N; i++) recepTime[i] = Integer.parseInt(st.nextToken());
-
-        st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= M; i++) repairTime[i] = Integer.parseInt(st.nextToken());
+        for (int i = 1; i <= N; i++) recepTime[i] = read();
+        for (int i = 1; i <= M; i++) repairTime[i] = read();
 
         customerQueue = new ArrayDeque<>();
-        st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= K; i++) {
-            customerQueue.offer(new Customer(i, Integer.parseInt(st.nextToken())));
-        }
+        for (int i = 1; i <= K; i++) customerQueue.offer(new Customer(i, read()));
 
         waitingRecep = new ArrayDeque<>();
         waitingRepair = new ArrayDeque<>();
+        
         recepDesk = new Customer[N + 1];
         repairDesk = new Customer[M + 1];
 
@@ -60,7 +56,7 @@ public class Solution {
         int servedCustomers = 0;
 
         while (servedCustomers < K) {
-
+        	
             // 1. 도착한 고객을 접수 대기 큐에 추가
             while (!customerQueue.isEmpty() && customerQueue.peek().arrivedTime == time) {
                 waitingRecep.offer(customerQueue.poll());
@@ -115,13 +111,14 @@ public class Solution {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        T = Integer.parseInt(br.readLine());
+    public static void main(String[] args) throws Exception {
+        T = read();
         for (int tc = 1; tc <= T; tc++) {
             init();
             simulate();
-            sb.append("#").append(tc).append(" ").append(answer == 0 ? -1 : answer).append('\n');
+            bw.write("#" + tc + " " + (answer == 0 ? -1 : answer) + "\n");
         }
-        System.out.println(sb);
+        bw.flush();
+        bw.close();
     }
 }
