@@ -2,27 +2,33 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        int N = Integer.parseInt(br.readLine());
+        int[] arr = new int[N];
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for(int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int N = Integer.parseInt(br.readLine());
-		
-		int[] dp = new int[N];
-		Arrays.fill(dp, 1);
-		int[] arr = new int[N];
+        List<Integer> lis = new ArrayList<>();
 
-		int ans = Integer.MIN_VALUE; 
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		for (int i = 0; i < N; i++) {
-			arr[i] = Integer.parseInt(st.nextToken());
+        for (int num : arr) {
+            int pos = Collections.binarySearch(lis, num);
 
-			if (i > 0) for (int j = 0; j < i; j++) if (arr[j] < arr[i]) dp[i] = Math.max(dp[i], dp[j]+1);
-			
-			ans = Math.max(ans, dp[i]);
-		}
-		
-		System.out.println(ans);
-	}
+            if (pos < 0) {
+                pos = -(pos + 1); // lower bound 위치
+            }
+
+            if (pos == lis.size()) {
+                lis.add(num); // 더 크면 뒤에 추가
+            } else {
+                lis.set(pos, num); // 교체
+            }
+        }
+
+        System.out.println(lis.size()); // LIS 길이
+    }
 }
