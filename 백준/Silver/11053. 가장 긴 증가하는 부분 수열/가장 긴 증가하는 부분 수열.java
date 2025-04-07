@@ -1,34 +1,39 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
-        int N = Integer.parseInt(br.readLine());
-        int[] arr = new int[N];
-        
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for(int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
-
-        List<Integer> lis = new ArrayList<>();
-
-        for (int num : arr) {
-            int pos = Collections.binarySearch(lis, num);
-
-            if (pos < 0) {
-                pos = -(pos + 1); // lower bound 위치
-            }
-
-            if (pos == lis.size()) {
-                lis.add(num); // 더 크면 뒤에 추가
-            } else {
-                lis.set(pos, num); // 교체
-            }
-        }
-
-        System.out.println(lis.size()); // LIS 길이
-    }
+	
+	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	private static int read() throws Exception {
+		int c, n = System.in.read() & 15;
+		while (( c = System.in.read()) >= 48) n = (n << 3) + (n << 1) + (c & 15);
+		if (c==13) System.in.read(); 
+		return n;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		int N = read();
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) {
+			arr[i] = read();
+		}
+		
+		int ANS = 0;
+		
+		int[] dp = new int[N];
+		for (int i = 0; i < N; i++) {
+			dp[i] = 1;
+			
+			for (int j = 0; j < i; j++) {
+				if (arr[j] < arr[i]) {
+					dp[i] = Math.max(dp[i], dp[j]+1);
+				}
+			}
+			
+			ANS = Math.max(ANS, dp[i]);
+		}
+		
+		bw.write(ANS + "\n");
+		bw.flush(); bw.close();
+	}
 }
