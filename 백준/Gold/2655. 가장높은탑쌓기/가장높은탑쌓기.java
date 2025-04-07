@@ -13,34 +13,20 @@ public class Main {
 
 	static class Brick implements Comparable<Brick> {
 		int id, width, height, weight;
-
-		public Brick(int id, int width, int height, int weight) {
-			this.id = id;
-			this.width = width; 
-			this.height = height; 
-			this.weight = weight;
-		}
-		
-		@Override 
-		public int compareTo(Brick o) { 
-			return o.width - this.width;
-		}
+		public Brick(int id, int width, int height, int weight) { this.id = id; this.width = width; this.height = height; this.weight = weight; }
+		@Override public int compareTo(Brick o) { return o.width - this.width; }
 	}
 
 	public static void main(String[] args) throws Exception {
 		int N = read();
+		
 		Brick[] bricks = new Brick[N + 1];
 		bricks[0] = new Brick(0, 0, 0, 0);
-
-		for (int i = 1; i <= N; i++) {
-			int width = read(), height = read(), weight = read();
-			bricks[i] = new Brick(i, width, height, weight);
-		}
+		for (int i = 1; i <= N; i++) bricks[i] = new Brick(i, read(), read(), read());
 
 		Arrays.sort(bricks, 1, N + 1);
 
-		int[] dp = new int[N + 1], trace = new int[N + 1];
-		int maxId = 0;
+		int maxId = 0, dp[] = new int[N+1], trace[] = new int[N+1];
 
 		for (int i = 1; i <= N; i++) {
 			dp[i] = bricks[i].height;
