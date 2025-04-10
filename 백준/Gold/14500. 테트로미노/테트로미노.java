@@ -1,10 +1,15 @@
-import java.util.*;
 import java.io.*;
 
 public class Main {
 
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	static StringTokenizer st;
+	
+	private static int read() throws Exception {
+		int c, n = System.in.read() & 15;
+		while ((c=System.in.read())>=48) n = (n<<1) + (n<<3) + (c&15);
+		if (c==13) System.in.read();
+		return n;
+	}
 
 	static int N, M, map[][], ANS;
 	static boolean[][] iv;
@@ -12,17 +17,14 @@ public class Main {
 	static final int[][] DIR = { {0,1}, {0,-1}, {1,0}, {-1,0} };
 	
 	private static void init() throws Exception {
-		st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
+		N = read(); M = read();
 		
 		ANS = Integer.MIN_VALUE;
 		iv = new boolean[N][M];
 		map = new int[N][M];
 		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < M; j++) {
-				map[i][j] = Integer.parseInt(st.nextToken());
+				map[i][j] = read();
 			}
 		}
 	}
