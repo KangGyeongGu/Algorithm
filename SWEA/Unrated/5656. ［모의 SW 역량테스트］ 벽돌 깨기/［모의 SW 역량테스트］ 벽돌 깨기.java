@@ -102,7 +102,8 @@ public class Solution {
 				for (int r = 1; r < cur.range; r++) {
 					int nx = cur.x + r * dir[0], ny = cur.y + r * dir[1];
 
-					if (isArrayOutOfIndex(nx, ny) || curMap[nx][ny] == 0) continue;
+					if (isArrayOutOfIndex(nx, ny)) continue;
+					if(curMap[nx][ny] == 0) continue;
 
 					Q.offer(new Coords(nx, ny, curMap[nx][ny]));
 					curMap[nx][ny] = 0;
