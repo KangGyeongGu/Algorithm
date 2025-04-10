@@ -31,6 +31,7 @@ public class Solution {
 		}
 	}
 
+	static final int INF = Integer.MAX_VALUE;
 	static final int[][] DIR = { {-1,0}, {1,0}, {0,-1}, {0,1} };
 
 	static int T, N, W, H, map[][], ANS;
@@ -62,7 +63,7 @@ public class Solution {
 				map[x][y] = Integer.parseInt(st.nextToken());
 			}
 		}
-		ANS = Integer.MAX_VALUE;
+		ANS = INF;
 	}
 
 	/**
@@ -150,19 +151,27 @@ public class Solution {
 	 */
 	private static void backtrack(int depth, int[][] curMap) {
 		if (depth == N) {
-			ANS = Math.min(ANS, countRemainingBricks(curMap));
+			int remaining = countRemainingBricks(curMap);
+			ANS = Math.min(ANS, remaining);
 			return;
 		}
 
-		for (int y = 0; y < W; y++) {
-			int[][] tempMap = mapCopy(curMap);
+		if (ANS == 0) return;
 
-			if (shooting(tempMap, y)) {
-				bricksDown(tempMap);
-				backtrack(depth + 1, tempMap);
-			} else {
-				backtrack(depth + 1, tempMap);
+		for (int y = 0; y < W; y++) {
+			boolean hasBrick = false;
+			for (int x = 0; x < H; x++) {
+				if (curMap[x][y] != 0) {
+					hasBrick = true;
+					break;
+				}
 			}
+			if (!hasBrick) continue;
+
+			int[][] tempMap = mapCopy(curMap);
+			shooting(tempMap, y);
+			bricksDown(tempMap);
+			backtrack(depth + 1, tempMap);
 		}
 	}
 
@@ -172,7 +181,7 @@ public class Solution {
 			init();
 			
 			backtrack(0, map);
-			bw.write("#" + tc + " " + ANS + "\n");
+			bw.write("#" + tc + " " + ((ANS == INF) ? 0 : ANS) + "\n");
 		}
 		bw.flush(); bw.close();
 	}
