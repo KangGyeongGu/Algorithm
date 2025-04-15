@@ -1,116 +1,114 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution {
 
-	static final int dy[]= {0,0,1,-1};
-	static final int dx[]= {1,-1,0,0};
-	
-	static final int DEAD=0, ACTIVE=1, INACTIVE=2;
-	static int T,N,M,K;
-	
-	static List<Cell> cell;
-	static PriorityQueue<Cell> pq;
-	static boolean[][] visited;
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static StringTokenizer st;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br=new BufferedReader (new InputStreamReader (System.in));
-		StringTokenizer st=null;
-		
-		T=Integer.parseInt(br.readLine());
-		
-		for (int tc=1; tc<=T; tc++) {
-			st=new StringTokenizer (br.readLine());
-			N=Integer.parseInt(st.nextToken());
-			M=Integer.parseInt(st.nextToken());
-			K=Integer.parseInt(st.nextToken());
-			
-			cell=new ArrayList<>();
-			pq=new PriorityQueue<>( (p1, p2) -> p2.power-p1.power );
-			visited=new boolean[N+2*K][M+2*K];
-			
-			
-			for (int i=0; i<N; i++) {
-				st=new StringTokenizer (br.readLine());
-				for (int j=0; j<M; j++) {
-					int n=Integer.parseInt(st.nextToken());
-				
-					if (n!=0) {
-						cell.add(new Cell(i+K,j+K,n,n));
-						visited[i+K][j+K]=true;
-					}
+    static class Cell implements Comparable<Cell> {
+        int r, c, x, time;
+        boolean activated;
 
-				}
-			}
-			simulation();
-			System.out.println("#"+tc+" "+count());
-				
-		}
-	}
-	
-	static void simulation () {
-		for (int k=1; k<=K; k++) {
-			
-			while (!pq.isEmpty()) {
-				Cell c=pq.poll();
-				int y=c.y;
-				int x=c.x;
-				
-				if (!visited[y][x]) {
-					visited[y][x]=true;
-					cell.add(c);
-				}
-			}
-			
-			for (int i=0; i<cell.size(); i++) {
-				if (cell.get(i).state==DEAD) continue;
-				
-				else if (cell.get(i).state==INACTIVE && cell.get(i).time==k) {
-					cell.get(i).state=ACTIVE;				
-					cell.get(i).time=k+cell.get(i).power;	
-					
-					
-					for (int d=0; d<4; d++) {
-						int ny=cell.get(i).y+dy[d];
-						int nx=cell.get(i).x+dx[d];
-						
-						pq.add(new Cell(ny,nx, k+1+cell.get(i).power, cell.get(i).power));
-					}
-					
-				} else if (cell.get(i).state==ACTIVE && cell.get(i).time==k) {
-					cell.get(i).state=DEAD;
-					cell.get(i).time=0;
-					cell.get(i).power=0;
-				}
-				
-			}
-		}
-	}
-	
-	static int count () {
-		int cnt=0;
-		for (int i=0; i<cell.size(); i++) {
-			if (cell.get(i).state==ACTIVE || cell.get(i).state==INACTIVE)
-				cnt++;
-		}
-		return cnt;
-	}
-	
-	
-	static class Cell {
-		int y,x,time,state,power;
-		
-		Cell (int y, int x, int time, int power) {
-			this.y=y;
-			this.x=x;
-			this.time=time;
-			this.power=power;
-			this.state=INACTIVE;
-		}		
-	}
+        Cell(int r, int c, int x) {
+            this.r = r;
+            this.c = c;
+            this.x = x;
+            this.time = x;
+            this.activated = false;
+        }
+
+        @Override
+        public int compareTo(Cell o) {
+            return o.x - this.x;
+        }
+
+        public int key() {
+            return r * OFFSET + c;
+        }
+    }
+
+    static final int[][] DIR = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+    static final int OFFSET = 2000;
+
+    static int T, N, M, K;
+    static Map<Integer, Cell> cellMap = new HashMap<>();
+    static PriorityQueue<Cell> pQ = new PriorityQueue<>();
+
+    public static void main(String[] args) throws Exception {
+        T = Integer.parseInt(br.readLine());
+
+        for (int t = 1; t <= T; t++) {
+            st = new StringTokenizer(br.readLine());
+            N = Integer.parseInt(st.nextToken());
+            M = Integer.parseInt(st.nextToken());
+            K = Integer.parseInt(st.nextToken());
+
+            cellMap.clear();
+            pQ.clear();
+
+            for (int i = 0; i < N; i++) {
+                st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < M; j++) {
+                    int x = Integer.parseInt(st.nextToken());
+                    if (x > 0) {
+                        int r = i + K;
+                        int c = j + K;
+                        Cell cell = new Cell(r, c, x);
+                        cellMap.put(cell.key(), cell);
+                        pQ.offer(cell);
+                    }
+                }
+            }
+
+            for (int time = 1; time <= K; time++) {
+                PriorityQueue<Cell> nextQueue = new PriorityQueue<>();
+                List<Cell> newCells = new ArrayList<>();
+
+                while (!pQ.isEmpty()) {
+                    Cell cell = pQ.poll();
+
+                    if (!cell.activated) {
+                        cell.time--;
+                        if (cell.time == 0) {
+                            cell.activated = true;
+                            cell.time = cell.x;
+                            nextQueue.offer(cell);
+                        } else {
+                            nextQueue.offer(cell);
+                        }
+                    } else {
+                        cell.time--;
+                        if (cell.time == cell.x - 1) {
+                            for (int[] dir : DIR) {
+                                int nr = cell.r + dir[0];
+                                int nc = cell.c + dir[1];
+                                int key = nr * OFFSET + nc;
+
+                                if (!cellMap.containsKey(key)) {
+                                    Cell newCell = new Cell(nr, nc, cell.x);
+                                    cellMap.put(key, newCell);
+                                    newCells.add(newCell);
+                                }
+                            }
+                        }
+                        if (cell.time > 0) nextQueue.offer(cell);
+                    }
+                }
+
+                for (Cell newCell : newCells) {
+                    if (cellMap.get(newCell.key()) == newCell) {
+                        nextQueue.offer(newCell);
+                    }
+                }
+
+                pQ = nextQueue;
+            }
+
+            sb.append("#").append(t).append(" ").append(pQ.size()).append("\n");
+        }
+
+        System.out.print(sb);
+    }
 }
