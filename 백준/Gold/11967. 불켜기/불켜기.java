@@ -5,87 +5,93 @@ public class Main {
 
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
+
+	static int[][] DIR = { {0,1}, {1,0}, {-1,0}, {0,-1} }; 
 	
-	static int[][] DIR = { {0,1}, {1,0}, {-1,0}, {0,-1} };
-	
-	static int N, M, lighted;
-	static int[][] barn;
-	static boolean[][] iV;
-	static Map<Integer, List<Integer>> bulb;
-	
+	static int N, M, SIZE, lighted;
+	static boolean[][] isLighted, iV;   
+	static Map<Integer, List<Integer>> bulbs;
+
+	// 초기화 메서드
 	private static void init() throws Exception {
 		st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		
-		barn = new int[N+1][N+1];
-		iV = new boolean[N+1][N+1];
-		bulb = new HashMap<>();
-		
+		N = Integer.parseInt(st.nextToken());  
+		M = Integer.parseInt(st.nextToken()); 
+
+		SIZE = N + 1; 
+
+		// 불 켜짐 여부, 방문 여부 배열 초기화
+		isLighted = new boolean[SIZE][SIZE];  
+		iV = new boolean[SIZE][SIZE];
+		bulbs = new HashMap<>(); 
+
+		// 스위치 정보 입력
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
-			int x = Integer.parseInt(st.nextToken());
+			int x = Integer.parseInt(st.nextToken());  
 			int y = Integer.parseInt(st.nextToken());
-			int a = Integer.parseInt(st.nextToken());
+			int a = Integer.parseInt(st.nextToken());  
 			int b = Integer.parseInt(st.nextToken());
-				
-			bulb.computeIfAbsent(x*(N+1)+y, k -> new ArrayList<>()).add(a*(N+1)+b);
+
+			bulbs.computeIfAbsent(compressCoordinate(x, y), k -> new ArrayList<>()).add(compressCoordinate(a, b));
 		}
+	}
+	
+	private static int compressCoordinate(int x, int y) {
+		return x * SIZE + y; 
 	}
 	
 	private static void bfs() {
 		Queue<Integer> Q = new ArrayDeque<>();
-		Q.offer(1*(N+1)+1);
-		barn[1][1] = 1;
+		Q.offer(compressCoordinate(1, 1));  
+		isLighted[1][1] = true; 
 		iV[1][1] = true;
 		lighted = 1;
-		
+
 		while (!Q.isEmpty()) {
-			
-			int cur = Q.poll();
-			int cx = cur / (N+1), cy = cur % (N+1);
-			
-			if (bulb.containsKey(cur)) {
-				
-				// 1. light on 
-				for (int room : bulb.get(cur)) { 
-					int rx = room / (N+1), ry = room % (N+1);
-					
-					if (barn[rx][ry] == 0) {
-						barn[rx][ry] = 1;
-						lighted++;
+			int cur = Q.poll();  
+			int cx = cur / SIZE;  
+			int cy = cur % SIZE;  
+
+			if (bulbs.containsKey(cur)) {
+				for (int room : bulbs.get(cur)) { 
+					int rx = room / SIZE; 
+					int ry = room % SIZE; 
+
+					if (!isLighted[rx][ry]) { 
+						isLighted[rx][ry] = true;  
+						lighted++; 
 					}
-					
+
 					for (int[] dir : DIR) {
 						int tx = rx + dir[0], ty = ry + dir[1];
 						if (1 <= tx && tx <= N && 1 <= ty && ty <= N && iV[tx][ty] && !iV[rx][ry]) {
-							Q.offer(rx * (N + 1) + ry);
-							iV[rx][ry] = true;
+							Q.offer(compressCoordinate(rx, ry)); 
+							iV[rx][ry] = true; 
 							break;
 						}
 					}
 				}
-				
-				bulb.get(cur).clear(); 
+				bulbs.get(cur).clear();  
 			}
+
 			
 			for (int[] dir : DIR) {
-				int nx = cx + dir[0], ny = cy + dir[1], next = nx * (N+1) + ny;
-				
-				if (N+1 <= nx || nx < 1 || N+1 <= ny || ny < 1 || iV[nx][ny] || barn[nx][ny] == 0) continue;
-				
+				int nx = cx + dir[0], ny = cy + dir[1];
+				int next = compressCoordinate(nx, ny); 
+
+				if (nx < 1 || nx > N || ny < 1 || ny > N || iV[nx][ny] || !isLighted[nx][ny]) continue;
+
 				iV[nx][ny] = true;
-				
 				Q.offer(next);
 			}
 		}
-		
+
 		System.out.println(lighted);
 	}
-	
-	
+
 	public static void main(String[] args) throws Exception {
-		init();
-		bfs();
+		init(); 
+		bfs(); 
 	}
 }
