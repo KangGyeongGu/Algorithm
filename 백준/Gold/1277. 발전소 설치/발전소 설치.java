@@ -83,8 +83,7 @@ public class Main {
 			int now = cur.to;
 
 
-	        if (visited[now]) continue;
-	        visited[now] = true;
+	        
 			
 			if (cur.cost > dist[now])
 				continue;
