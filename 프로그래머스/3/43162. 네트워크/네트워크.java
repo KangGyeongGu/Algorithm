@@ -7,12 +7,23 @@ class Solution {
         
         for (int i = 0; i < n; i++) {
             if (!visited[i]) {
-                bfs(i, n, computers, visited);
+                // bfs(i, n, computers, visited);
+                dfs(i, n, computers, visited);
                 answer++;
             }
         }
         
         return answer;
+    }
+    
+    private void dfs(int node, int n, int[][] computers, boolean[] visited) {
+        visited[node] = true;
+        
+        for (int i = 0; i < n; i++) {
+            if (computers[node][i] == 1 && !visited[i]) {
+                dfs(i, n, computers, visited);
+            }
+        }
     }
     
     private void bfs(int start, int n, int[][] computers, boolean[] visited) {
