@@ -9,15 +9,15 @@ class Solution {
         int[] out = new int[MAX+1];
         
         for (int[] edge : edges) {
-            out[edge[0]]++;
             in[edge[1]]++;
+            out[edge[0]]++;
         }
         
-        int created = 0;
+        int createVertex = 0;
         
         for (int i = 1; i <= MAX; i++) {
             if (in[i] == 0 && out[i] >= 2) {
-                created = i;
+                createVertex = i;
                 break;
             }
         }
@@ -25,14 +25,14 @@ class Solution {
         int stick = 0, eight = 0;
         
         for (int i = 1; i <= MAX; i++) {
-            if (i == created) continue;
+            if (i == createVertex) continue;
             
-            if (out[i] == 0 && in[i] > 0) stick++;
+            if (in[i] > 0 && out[i] == 0) stick++;
             else if (out[i] == 2) eight++;
         }
         
-        int donut = out[created] - stick - eight;
+        int donut = out[createVertex] - stick - eight;
         
-        return new int[]{created, donut, stick, eight};        
+        return new int[]{createVertex, donut, stick, eight};
     }
 }
