@@ -17,9 +17,9 @@ class Solution {
             String[] split = privacies[i].split(" ");
             
             int currDate = toDays(split[0]);
-            int expDate = currDate + termMap.get(split[1]) - 1;
+            int expDate = currDate + termMap.get(split[1]);
             
-            if (expDate < stdDate) {
+            if (expDate <= stdDate) {
                 result.add(i+1);
             }
         }
