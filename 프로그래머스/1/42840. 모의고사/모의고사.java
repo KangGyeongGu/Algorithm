@@ -13,13 +13,13 @@ class Solution {
         int[] score = new int[3];
         int fIdx = 0, sIdx = 0, tIdx = 0;
         for (int i = 0; i < answers.length; i++) {
-            if (answers[i] == ways[0][fIdx++]) score[0]++;
-            if (answers[i] == ways[1][sIdx++]) score[1]++;
-            if (answers[i] == ways[2][tIdx++]) score[2]++;
+            if (answers[i] == ways[0][i%ways[0].length]) score[0]++;
+            if (answers[i] == ways[1][i%ways[1].length]) score[1]++;
+            if (answers[i] == ways[2][i%ways[2].length]) score[2]++;
             
-            if (fIdx == 5) fIdx = 0;
-            if (sIdx == 8) sIdx = 0;
-            if (tIdx == 10) tIdx = 0;
+//             if (fIdx == 5) fIdx = 0;
+//             if (sIdx == 8) sIdx = 0;
+//             if (tIdx == 10) tIdx = 0;
         }
         
         int max = Math.max(score[0], Math.max(score[1], score[2]));
