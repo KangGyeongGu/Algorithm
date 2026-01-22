@@ -1,117 +1,93 @@
 import java.util.*;
 
 class Solution {
-    // 수레 별 방문(이동) 이력
-    static boolean[][] rMove, bMove;
-    static int minCount;
+    static boolean[] rMove, bMove;
+    static int minCount = 16;
+
+    static int n, m;
 
     public int solution(int[][] maze) {
-        int n = maze.length;
-        int m = maze[0].length;
+        int answer = 0;
 
-        rMove = new boolean[n][m];
-        bMove = new boolean[n][m];
-        minCount = Integer.MAX_VALUE;
+        n = maze.length;
+        m = maze[0].length;
 
-        // 수레 별 현재/끝 좌표 (row, col)
-        int[] red      = null;
-        int[] blue     = null;
-        int[] redGoal  = null;
-        int[] blueGoal = null;
+        rMove = new boolean[n * m];
+        bMove = new boolean[n * m];
 
-        // 시작/도착 좌표 찾기 + 시작칸 방문 처리
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (maze[i][j] == 1) { red = new int[]{i, j}; rMove[i][j] = true; }
-                else if (maze[i][j] == 2) { blue = new int[]{i, j}; bMove[i][j] = true; }
-                else if (maze[i][j] == 3) { redGoal = new int[]{i, j}; }
-                else if (maze[i][j] == 4) { blueGoal = new int[]{i, j}; }
+        int red = -1, blue = -1, redGoal = -1, blueGoal = -1;
+
+        for (int y = 0; y < n; y++) {
+            for (int x = 0; x < m; x++) {
+                int idx = y * m + x;
+                if (maze[y][x] == 1) { red = idx; rMove[idx] = true; }
+                if (maze[y][x] == 2) { blue = idx; bMove[idx] = true; }
+                if (maze[y][x] == 3) redGoal = idx;
+                if (maze[y][x] == 4) blueGoal = idx;
             }
         }
 
         move(red, blue, redGoal, blueGoal, maze, 0);
+        answer = minCount == 16 ? 0 : minCount;
 
-        return (minCount == Integer.MAX_VALUE) ? 0 : minCount;
+        return answer;
     }
 
-    private void move(int[] red, int[] blue, int[] redGoal, int[] blueGoal, int[][] maze, int moveCnt) {
-        // 가지치기: 이미 최솟값 이상이면 더 볼 필요 없음
-        if (moveCnt >= minCount) return;
+    private void move(int red, int blue, int redGoal, int blueGoal, int[][] maze, int moveCnt) {
+        int redY = red / m, redX = red % m;
+        int blueY = blue / m, blueX = blue % m;
 
-        int redY = red[0], redX = red[1];
-        int blueY = blue[0], blueX = blue[1];
-
-        // 둘 다 도착
-        if (redY == redGoal[0] && redX == redGoal[1] &&
-            blueY == blueGoal[0] && blueX == blueGoal[1]) {
+        if (red == redGoal && blue == blueGoal) {
             minCount = Math.min(minCount, moveCnt);
             return;
         }
 
-        int n = maze.length;
-        int m = maze[0].length;
-
-        // 상하좌우 (dy, dx)
-        int[] dy = {-1, 1, 0, 0};
+        // 상하좌우
         int[] dx = {0, 0, -1, 1};
+        int[] dy = {-1, 1, 0, 0};
 
-        List<int[]> redDirections = new ArrayList<>();
-        List<int[]> blueDirections = new ArrayList<>();
+        List<Integer> redDirections = new ArrayList<>();
+        List<Integer> blueDirections = new ArrayList<>();
 
-        // 빨강 후보 생성 (도착이면 제자리만)
-        if (redY == redGoal[0] && redX == redGoal[1]) {
-            redDirections.add(new int[]{redY, redX});
-        } else {
+        // 빨강 이동 후보
+        if (red == redGoal) redDirections.add(red);
+        else {
             for (int i = 0; i < 4; i++) {
                 int ny = redY + dy[i];
                 int nx = redX + dx[i];
-
                 if (ny < 0 || ny >= n || nx < 0 || nx >= m) continue;
-                if (maze[ny][nx] == 5) continue;
-                if (rMove[ny][nx]) continue;
-
-                redDirections.add(new int[]{ny, nx});
+                int nIdx = ny * m + nx;
+                if (rMove[nIdx] || maze[ny][nx] == 5) continue;
+                redDirections.add(nIdx);
             }
         }
 
-        // 파랑 후보 생성 (도착이면 제자리만)
-        if (blueY == blueGoal[0] && blueX == blueGoal[1]) {
-            blueDirections.add(new int[]{blueY, blueX});
-        } else {
+        // 파랑 이동 후보
+        if (blue == blueGoal) blueDirections.add(blue);
+        else {
             for (int i = 0; i < 4; i++) {
                 int ny = blueY + dy[i];
                 int nx = blueX + dx[i];
-
                 if (ny < 0 || ny >= n || nx < 0 || nx >= m) continue;
-                if (maze[ny][nx] == 5) continue;
-                if (bMove[ny][nx]) continue;
-
-                blueDirections.add(new int[]{ny, nx});
+                int nIdx = ny * m + nx;
+                if (bMove[nIdx] || maze[ny][nx] == 5) continue;
+                blueDirections.add(nIdx);
             }
         }
 
-        // 동시 이동 조합
-        for (int[] rNext : redDirections) {
-            for (int[] bNext : blueDirections) {
+        for (int nr : redDirections) {
+            for (int nb : blueDirections) {
+                if (nr == nb) continue;
 
-                // 같은 칸으로 동시에 이동 금지
-                if (rNext[0] == bNext[0] && rNext[1] == bNext[1]) continue;
+                if (nr == blue && nb == red) continue;
 
-                // 자리 교환 금지
-                if (rNext[0] == blueY && rNext[1] == blueX &&
-                    bNext[0] == redY && bNext[1] == redX) continue;
+                rMove[nr] = true;
+                bMove[nb] = true;
 
-                // 방문 배열 토글 버그 방지: 원래 값 저장 후 복원
-                boolean prevR = rMove[rNext[0]][rNext[1]];
-                boolean prevB = bMove[bNext[0]][bNext[1]];
+                move(nr, nb, redGoal, blueGoal, maze, moveCnt + 1);
 
-                rMove[rNext[0]][rNext[1]] = true;
-                bMove[bNext[0]][bNext[1]] = true;
-
-                move(rNext, bNext, redGoal, blueGoal, maze, moveCnt + 1);
-
-                rMove[rNext[0]][rNext[1]] = prevR;
-                bMove[bNext[0]][bNext[1]] = prevB;
+                rMove[nr] = false;
+                bMove[nb] = false;
             }
         }
     }
