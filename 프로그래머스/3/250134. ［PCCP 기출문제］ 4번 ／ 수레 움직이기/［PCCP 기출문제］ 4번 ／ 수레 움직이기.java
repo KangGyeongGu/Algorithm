@@ -89,10 +89,10 @@ class Solution {
     
     private long pack(int r, int b, int rMask, int bMask) {
         long key = 0;
-        key |= (long) (r & 0xF);
-        key |= (long) (b & 0xF) << 4;
-        key |= (long) (rMask & 0xFFFF) << 8;
-        key |= (long) (bMask & 0xFFFF) << 24;
+        key |= (long) (r);
+        key |= (long) (b) << 4;
+        key |= (long) (rMask) << 8;
+        key |= (long) (bMask) << 24;
         return key;
     }
     
