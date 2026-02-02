@@ -1,47 +1,36 @@
 import java.util.*;
 
 class Solution {
+    
     public int solution(int n, int[][] computers) {
-        int answer = 0;
         boolean[] visited = new boolean[n];
+        int networks = 0;
         
         for (int i = 0; i < n; i++) {
-            if (!visited[i]) {
-                // bfs(i, n, computers, visited);
-                dfs(i, n, computers, visited);
-                answer++;
-            }
+            if (visited[i]) continue;
+            bfs(i, computers, visited);
+            networks++;
         }
         
-        return answer;
+        return networks;
     }
     
-    private void dfs(int node, int n, int[][] computers, boolean[] visited) {
-        visited[node] = true;
-        
-        for (int i = 0; i < n; i++) {
-            if (computers[node][i] == 1 && !visited[i]) {
-                dfs(i, n, computers, visited);
-            }
-        }
-    }
-    
-    private void bfs(int start, int n, int[][] computers, boolean[] visited) {
-        Deque<Integer> q = new ArrayDeque<>();
-        q.offer(start);
+    private void bfs(int start, int[][] graph, boolean[] visited) {
+        Deque<Integer> dq = new ArrayDeque<>();
         visited[start] = true;
+        dq.offer(start);
         
-        while (!q.isEmpty()) {
-            int curr = q.poll();
-            
-            for (int i = 0; i < n; i++) {
-                if (computers[curr][i] == 1 && !visited[i]) {
-                    visited[i] = true;
-                    q.offer(i);
+        while (!dq.isEmpty()) {
+            int cur = dq.poll();
+
+            for (int next = 0; next < graph.length; next++) {
+                if (graph[cur][next] == 1 && !visited[next]) {
+                    visited[next] = true;
+                    dq.offer(next);
                 }
             }
-            
         }
-        
     }
+    
+    
 }
